@@ -36,30 +36,30 @@ class QueueService
 
     public function set(array $attributes) 
     {
-        $queueId = $this->getQueue($attributes);
+        $queue = $this->getQueue($attributes);
 
-        if (!$queueId) {
+        if (!$queue) {
             return false;
         }
 
-        return $this->redis->rpush($queueId->id, $attributes['content']); 
+        return $this->redis->rpush($queue->id, $attributes['content']); 
     }
 
     public function get(array $attributes) 
     {
-        $queueId = $this->getQueue($attributes);
+        $queue = $this->getQueue($attributes);
 
-        if (!$queueId) {
+        if (!$queue) {
             return false;
         }
 
-        $content = $this->redis->lpop($queueId->id);
+        $content = $this->redis->lpop($queue->id);
         
         if (!$content) {
             return false;
         }
 
-        return $this->redis->rpush($queueId->id, $content);
+        return $this->redis->rpush($queue->id, $content);
     }
 
      public function getQueue(array $attributes) 
