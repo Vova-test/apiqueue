@@ -28,7 +28,7 @@ class QueueRepository
                     ->delete();
     }
 
-    public function getQueueId(array $attributes)
+    public function getQueue(array $attributes)
     {
         $queue = $this->model
                       ->where('title', $attributes['title'])

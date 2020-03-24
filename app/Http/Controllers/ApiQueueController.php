@@ -17,7 +17,7 @@ class ApiQueueController extends Controller
     public function create(Request $request) 
     {
         return $this->queueService->create([
-            'title' => $request->headers->get('title'),
+            'title' => $request->title,
             'user_id' => $request->user->id
         ]);
     }
@@ -25,7 +25,7 @@ class ApiQueueController extends Controller
     public function delete(Request $request) 
     {
         return $this->queueService->delete([
-            'title' => $request->headers->get('title'),
+            'title' => $request->title,
             'user_id' => $request->user->id
         ]);
     }
@@ -34,8 +34,8 @@ class ApiQueueController extends Controller
     {
         return $this->queueService->set([
             'user_id' => $request->user->id,
-            'title' => $request->headers->get('title'),
-            'content' => $request->headers->get('content')
+            'title' => $request->title,
+            'content' => $request->content
         ]);
     }
 
@@ -43,14 +43,7 @@ class ApiQueueController extends Controller
     {
         return $this->queueService->get([
             'user_id' => $request->user->id,
-            'title' => $request->headers->get('title')
+            'title' => $request->title
         ]);
     }
-
-    /*public function isJson(String $string)
-    {
-        return is_string($string) 
-            && is_array(json_decode($string, true)) 
-            && (json_last_error() == JSON_ERROR_NONE) ? true : false;
-    }*/
 }

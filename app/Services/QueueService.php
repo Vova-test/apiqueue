@@ -15,6 +15,10 @@ class QueueService
 
     public function create(array $attributes) 
     {
+        $record = $this->getQueue($attributes);
+        if ($record) {
+            return ['result' => 'There is the queue with name '.$attributes['title']];
+        }
         return $this->repository->create($attributes);
     }
 
@@ -32,38 +36,34 @@ class QueueService
 
     public function set(array $attributes) 
     {
-        $idQueue = $this->getQueue($attributes);
+        $queueId = $this->getQueue($attributes);
 
-        if (!$idQueue) {
+        if (!$queueId) {
             return false;
         }
 
-        return $this->redis->rpush($idQueue->id, $attributes['content']); 
+        return $this->redis->rpush($queueId->id, $attributes['content']); 
     }
 
     public function get(array $attributes) 
     {
-        $idQueue = $this->getQueue($attributes);
+        $queueId = $this->getQueue($attributes);
 
-        if (!$idQueue) {
+        if (!$queueId) {
             return false;
         }
 
-        $content = $this->redis->lpop($idQueue->id);
+        $content = $this->redis->lpop($queueId->id);
         
         if (!$content) {
             return false;
         }
 
-        if (1 == 1) { 
-            return $this->redis->rpush($idQueue->id, $content);
-        }
-
-        return ['content' => $content];
+        return $this->redis->rpush($queueId->id, $content);
     }
 
      public function getQueue(array $attributes) 
     {
-        return $this->repository->getQueueId($attributes);
+        return $this->repository->getQueue($attributes);
     }
 }
