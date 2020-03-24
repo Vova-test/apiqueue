@@ -15,27 +15,55 @@ class QueueService
 
     public function create(array $attributes) 
     {
-        if ($this->repository->create($attributes)) {
-            return $attributes['queueKey'];
-        } 
+        return $this->repository->create($attributes);
     }
 
-    public function delete(string $queueKey) 
-    {        
-        if ($this->repository->delete($queueKey)) {
-            return $queueKey;
-        }  
+    public function delete(array $attributes) 
+    {   
+        $record = $this->getQueue($attributes);
+        
+        if ($record) {
+            $this->redis->del($record->id);
+            return $record->delete();
+        } 
+
+        return false;
     }
 
     public function set(array $attributes) 
     {
-        return $this->redis->rpush($attributes['key'], $attributes['content']); 
-        //return $attributes;   
+        $idQueue = $this->getQueue($attributes);
+
+        if (!$idQueue) {
+            return false;
+        }
+
+        return $this->redis->rpush($idQueue->id, $attributes['content']); 
     }
 
-    public function get(string $queueKey) 
+    public function get(array $attributes) 
     {
-        return $this->redis->lpop($queueKey);
-        //return 'got queue';  
+        $idQueue = $this->getQueue($attributes);
+
+        if (!$idQueue) {
+            return false;
+        }
+
+        $content = $this->redis->lpop($idQueue->id);
+        
+        if (!$content) {
+            return false;
+        }
+
+        if (1 == 1) { 
+            return $this->redis->rpush($idQueue->id, $content);
+        }
+
+        return ['content' => $content];
+    }
+
+     public function getQueue(array $attributes) 
+    {
+        return $this->repository->getQueueId($attributes);
     }
 }

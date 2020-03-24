@@ -20,10 +20,20 @@ class QueueRepository
         return $model->create($attributes);
     }
 
-    public function delete(string $queueKey)
+    public function delete(array $attributes)
     {
         return $this->model
-                    ->where('queue_key', $queueKey)
+                    ->where('title', $attributes['title'])
+                    ->where('user_id', $attributes['user_id'])
                     ->delete();
+    }
+
+    public function getQueueId(array $attributes)
+    {
+        $queue = $this->model
+                      ->where('title', $attributes['title'])
+                      ->where('user_id', $attributes['user_id'])
+                      ->first();
+        return $queue;
     }
 }

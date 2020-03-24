@@ -14,33 +14,37 @@ class ApiQueueController extends Controller
         $this->queueService = $queueService;
     }
 
-    public function main(Request $request, string $type) 
-    {    
-        if ($type == 'c') {
-            return $this->queueService->create([
-                'user_name' => $request->user,
-                'email' => $request->email,
-                'queue_title' => $request->title,
-                'queue_key' => $request->title.time()
-            ]);
-        }
+    public function create(Request $request) 
+    {
+        return $this->queueService->create([
+            'title' => $request->headers->get('title'),
+            'user_id' => $request->user->id
+        ]);
+    }
 
-        if ($type == 'd') {
-            return $this->queueService->delete($request->key);
-        }
+    public function delete(Request $request) 
+    {
+        return $this->queueService->delete([
+            'title' => $request->headers->get('title'),
+            'user_id' => $request->user->id
+        ]);
+    }
 
-        if ($type == 's') {
-            return $this->queueService->set([
-                'key' => $request->key,
-                'content' => $request->content
-            ]);
-        }
+    public function add(Request $request) 
+    {
+        return $this->queueService->set([
+            'user_id' => $request->user->id,
+            'title' => $request->headers->get('title'),
+            'content' => $request->headers->get('content')
+        ]);
+    }
 
-        if ($type == 'g') {
-            return $this->queueService->get($request->key);
-        }
-
-        return "The format isn't validated!";
+    public function get(Request $request) 
+    {
+        return $this->queueService->get([
+            'user_id' => $request->user->id,
+            'title' => $request->headers->get('title')
+        ]);
     }
 
     /*public function isJson(String $string)

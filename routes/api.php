@@ -1,7 +1,8 @@
-<?php
+ <?php
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\StatelessUser;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +19,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/action/{type}', 'ApiQueueController@main');
+Route::middleware(['stateless.auth'])->group(function () {
+    Route::post('/queue/create', 'ApiQueueController@create');
+	Route::post('/queue/delete', 'ApiQueueController@delete');
+	Route::post('/content/add', 'ApiQueueController@add');
+	Route::post('/content/get', 'ApiQueueController@get');
+});
