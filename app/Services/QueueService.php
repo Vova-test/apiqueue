@@ -37,11 +37,9 @@ class QueueService
     public function set(array $attributes) 
     {
         $queue = $this->getQueue($attributes);
-
         if (!$queue) {
             return false;
         }
-
         return $this->redis->rpush($queue->id, $attributes['content']); 
     }
 

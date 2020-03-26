@@ -16,34 +16,42 @@ class ApiQueueController extends Controller
 
     public function create(Request $request) 
     {
+        $requestArray = $request->post();
+
         return $this->queueService->create([
-            'title' => $request->title,
+            'title' => $requestArray['title'],
             'user_id' => $request->user->id
         ]);
     }
 
     public function delete(Request $request) 
     {
+        $requestArray = $request->post();
+
         return $this->queueService->delete([
-            'title' => $request->title,
+            'title' => $requestArray['title'],
             'user_id' => $request->user->id
         ]);
     }
 
     public function add(Request $request) 
     {
+        $requestArray = $request->post();
+
         return $this->queueService->set([
             'user_id' => $request->user->id,
-            'title' => $request->title,
-            'content' => $request->content
+            'title' => $requestArray['title'],
+            'content' => $requestArray['content']
         ]);
     }
 
     public function get(Request $request) 
     {
+        $requestArray = $request->post();
+        
         return $this->queueService->get([
             'user_id' => $request->user->id,
-            'title' => $request->title
+            'title' => $requestArray['title']
         ]);
     }
 }
